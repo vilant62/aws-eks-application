@@ -1,0 +1,18 @@
+name: Build simple webapplication
+
+on:
+  push:
+    branches:
+        - main
+    paths:
+      - application/
+  workflow_dispatch:
+
+jobs:
+  build-application:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+
