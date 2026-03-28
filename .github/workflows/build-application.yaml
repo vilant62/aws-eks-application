@@ -20,6 +20,7 @@ jobs:
       packages: write
       attestations: write
       id-token: write
+      artifact-metadata: write
 
     steps:
       - name: Checkout Code
@@ -64,5 +65,5 @@ jobs:
         uses: actions/attest@v4
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
-          subject-digest: ${{ steps.push.outputs.digest }}
+          subject-digest: ${{ steps.build.outputs.digest }}
           push-to-registry: true
