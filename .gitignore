@@ -54,7 +54,7 @@ logs/
 *.tfstate
 *.tfstate.*
 terraform.tfvars
-.terraform.lock.hcl
+*tfplan
 
 # Build artifacts
 dist/
