@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aws-eks-application
+  labels:
+    app: aws-eks-application
+spec:
+  replicas: 1
+  minReadySeconds: 90
+  selector:
+    matchLabels:
+      app: aws-eks-application
+  template:
+    metadata:
+      labels:
+        app: aws-eks-application
+    spec:
+      containers:
+      - name: webapp
+        image: webapp:0.1.0
+        resources:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            cpu: 200m
+            memory: 256Mi
+        ports:
+        - containerPort: 4000
+        securityContext:
+          readOnlyRootFilesystem: true
+          # TODO: Update Dockerfile to run as non root user
+          runAsNonRoot: false

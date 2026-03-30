@@ -1,0 +1,61 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: aws-eks-application-int-ingress
+  annotations:
+    alb.ingress.kubernetes.io/group.name: my-app-internal-group
+    alb.ingress.kubernetes.io/scheme: internal
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/load-balancer-name: df-internal-alb
+    alb.ingress.kubernetes.io/inbound-cidrs: vpc_cidr
+spec:
+  ingressClassName: alb
+  rules:
+  - http:
+      paths:
+        - path: /get
+          pathType: Prefix
+          backend:
+            service:
+              name: aws-eks-application-svc
+              port:
+                number: 8080
+        - path: /post
+          pathType: Prefix
+          backend:
+            service:
+              name: aws-eks-application-svc
+              port:
+                number: 8080
+        - path: /delete
+          pathType: Prefix
+          backend:
+            service:
+              name: aws-eks-application-svc
+              port:
+                number: 8080
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: aws-eks-application-ext-ingress
+  annotations:
+    alb.ingress.kubernetes.io/group.name: my-app-public-group
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/load-balancer-name: eks-project-public-alb
+    alb.ingress.kubernetes.io/inbound-cidrs: vpc_cidr
+spec:
+  ingressClassName: alb
+  rules:
+  - http:
+      paths:
+      - path: /*
+        pathType: Prefix
+        backend:
+          service:
+            name: aws-eks-application-svc
+            port:
+              number: 8080

@@ -1,0 +1,43 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: aws-eks-application
+
+resources:
+- ../../base
+
+images:
+- name: webapp
+  newName: ghcr.io/vilant62/aws-eks-application
+  newTag: main
+
+patches:
+  - target:
+      kind: Ingress
+      name: aws-eks-application-int-ingress
+    patch: |
+      apiVersion: networking.k8s.io/v1
+      kind: Ingress
+      metadata:
+        name: aws-eks-application-int-ingress
+        annotations:
+          alb.ingress.kubernetes.io/group.name: "my-app-internal-group"
+          alb.ingress.kubernetes.io/scheme: "internal"
+          alb.ingress.kubernetes.io/target-type: "ip"
+          alb.ingress.kubernetes.io/load-balancer-name: "eks-project-internal-alb"
+          alb.ingress.kubernetes.io/inbound-cidrs: "10.10.10.0/24, 10.10.20.0/24"
+
+  - target:
+      kind: Ingress
+      name: aws-eks-application-ext-ingress
+    patch: |
+      apiVersion: networking.k8s.io/v1
+      kind: Ingress
+      metadata:
+        name: aws-eks-application-ext-ingress
+        annotations:
+          alb.ingress.kubernetes.io/group.name: "my-public-group"
+          alb.ingress.kubernetes.io/scheme: "internet-facing"
+          alb.ingress.kubernetes.io/target-type: "ip"
+          alb.ingress.kubernetes.io/load-balancer-name: "eks-project-public-alb"
+
